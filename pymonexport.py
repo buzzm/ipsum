@@ -1,0 +1,148 @@
+import pymongo
+from pymongo import MongoClient
+
+from bson.objectid import ObjectId
+from bson.binary import Binary
+
+import datetime
+import base64
+import sys
+import argparse
+
+arrayMode = False
+
+noID = False
+
+def main(args):
+    global noID
+
+    parser = argparse.ArgumentParser(description=
+"""Sort of like the real mongoexport but emits more type information.  The
+collection is dumped to stdout so redirect as needed"""
+   )
+#    parser.add_argument('schemaFile', metavar='file',
+#                   help='json-schema.org schema file to use')
+    parser.add_argument('-c','--collection', 
+                   help='collection to dump')
+    parser.add_argument('-d','--db', 
+                        help="database to use")
+    parser.add_argument('--host', default="localhost",
+                        help="hostname to connect to")
+    parser.add_argument('--port', type=int, default=27017,
+                        help="port to connect to")
+
+    parser.add_argument('--noID', 
+                        action="store_true",
+                        help="do not emit _id")
+
+    rargs = parser.parse_args()
+
+    try:
+        client = MongoClient(rargs.host, rargs.port)
+
+        db = client[rargs.db]  # client["mydb"]
+        coll = db[rargs.collection]
+
+        noID = rargs.noID
+
+        for c in coll.find():
+            emitDoc(0, c)
+            print("")
+        
+    except ValueError as e:
+        print "fail of some kind: %s" % e
+
+        
+
+def emit(spcs, str):
+    if arrayMode == True:
+        print str
+    else:
+        print spcs, str,
+
+
+def emitItem(lvl, ith, v):
+    global noID
+
+    spcs = ""
+    spcs2 = " " * ith
+
+    if isinstance(v, unicode):
+        emit(spcs, "\"%s\"" % (v))
+        
+    elif isinstance(v, int):
+        emit(spcs,  "{\"$int\":%s}" % (v) )
+            
+    elif isinstance(v, float):
+        emit(spcs,  "{\"$float\":%s}" % (v) )
+
+    elif isinstance(v, long):
+        emit(spcs,  "{\"$long\":%s}" % (v) )
+
+    elif isinstance(v, datetime.datetime):
+        q = v.strftime('%s')
+        emit(spcs,  "{\"$date\":%s}" % (q) )
+
+
+
+    elif isinstance(v, ObjectId):
+        # toString of ObjectId mercifully does the right thing....
+        emit(spcs,  "{\"$oid\":\"%s\"}" % (v) )
+
+
+    elif isinstance(v, Binary):
+        q = base64.b64encode(v);
+        emit(spcs,  "{\"$binary\":\"%s\"}" % (q) )
+
+
+    elif isinstance(v, list):
+        emit (spcs2,  "[" )
+        i = 0
+        for item in v:
+            if i > 0:
+                emit( spcs2, "," )
+
+            emitItem(lvl + 1, i, item)
+            i = i + 1
+
+        emit( spcs2, "]" ) 
+
+    elif isinstance(v, dict):
+        emitDoc(lvl + 1, v)
+
+    else:
+        #  UNKNOWN type?
+        t = type(v)
+        emit(spcs,  "\"%s::%s\"" % (t,v) )
+
+
+
+def emitDoc(lvl, m):
+    if arrayMode == True:
+        spcs = " " * (lvl*2)
+    else:
+        spcs = ""
+
+    emit( spcs, "{")
+
+    i = 0
+    for k in m:
+        if k == '_id' and noID == True:
+            continue
+
+        item = m[k]
+        if i > 0:
+            emit(spcs,  "  ,\"%s\":" % (k) )
+        else:
+            emit(spcs,  "  \"%s\":" % (k) )
+
+        emitItem(lvl + 1, i, item)
+        i = i + 1
+
+    emit(spcs,  "}")
+        
+
+
+#
+#  Std way to fire it up....
+main(sys.argv)
