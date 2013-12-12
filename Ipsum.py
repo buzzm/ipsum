@@ -132,7 +132,7 @@ method of the mongoDB python driver!
 
 
 
-    def makeThing(self, info):
+    def makeThing(self, path, info):
         type = info["type"]
 
         if type == "string":
@@ -143,9 +143,7 @@ method of the mongoDB python driver!
                 fmt = info['format']
 
             if "enum" in info:
-                l = info['enum']
-                #v = l[self.randomInt(0, len(l) - 1)] # v is no longer None
-                v = self.randomFrom(l) # v is no longer None
+                v = self.randomFrom(info['enum']) # v is no longer None
 
             # date-time is special.  VERY special...
             if fmt == "date-time":
@@ -153,7 +151,32 @@ method of the mongoDB python driver!
                     dt = parser.parse(v)
                     epoch = int(dt.strftime('%s'))
                 else:
-                    epoch = self.randomLong(self.lowDateEpoch, self.highDateEpoch)
+                    if 'ipsum' in info:  # if we have ipsum...
+                        q = info['ipsum']
+                        if 'inc' in q: # ...AND we have inc then OK!
+                            q2 = q['inc']  #i.e. { "start": 0, "val": 1 }
+                            if path not in self.counters:
+                                dt = parser.parse(q2['start'])
+                                epoch = int(dt.strftime('%s'))
+                                self.counters[path] = epoch
+                            else:
+                                if 'secs' in q2:
+                                    v2 = q2['secs']
+                                if 'mins' in q2:
+                                    v2 = q2['mins'] * 60
+                                if 'hrs' in q2:
+                                    v2 = q2['hrs'] * 60 * 60
+                                if 'days' in q2:
+                                    v2 = q2['days'] * 60 * 60 * 24
+
+                                self.counters[path] += v2
+
+                            epoch = self.counters[path]
+
+                    # was no ipsum or no ipsum.inc...
+                    else:
+                        epoch = self.randomLong(self.lowDateEpoch, self.highDateEpoch)
+
 
                 if self.mode == self.FULL_EXT_JSON or self.mode == self.MONGO_JSON:
                     o = { "$date": epoch }
@@ -177,7 +200,7 @@ method of the mongoDB python driver!
         elif type == "object":
             ss = info["properties"]
             nn = {}
-            self.processObject(nn, ss)
+            self.processObject(nn, path, ss)
             o = nn;
             
 
@@ -187,12 +210,12 @@ method of the mongoDB python driver!
             mmax = ss['maxItems'] if 'maxItems' in ss else self.DEF_MAX_ARR_LEN
             
             # List comprehensions front and center....
-            o = [ self.makeThing(ss) for i in xrange( self.randomInt(mmin, mmax)) ]
+            o = [ self.makeThing(path + "." + str(i), ss) for i in xrange( self.randomInt(mmin, mmax)) ]
             
         elif type == "poly":
             ll = info["items"]  # A list, not a dict!
             x = self.randomFrom(ll) # pick one and go!
-            o = self.makeThing(x)
+            o = self.makeThing(path, x)
             
 
         elif type == "integer":
@@ -205,12 +228,12 @@ method of the mongoDB python driver!
             elif "ipsum" in info:
                 q = info['ipsum']
                 if 'inc' in q:
-                    q2 = q['inc']  #i.e. A
-                    if q2 not in self.counters:
-                        self.counters[q2] = 0
+                    q2 = q['inc']  #i.e. { "start": 0, "val": 1 }
+                    if path not in self.counters:
+                        self.counters[path] = q2['start']
                     else:
-                        self.counters[q2] += 1
-                    v = self.counters[q2]
+                        self.counters[path] += q2['val']
+                    v = self.counters[path]
 
             if v == None:
                 mmin = info['minimum'] if 'minimum' in info else -100
@@ -245,7 +268,7 @@ method of the mongoDB python driver!
 	return o
 
 
-    def processObject(self, target, schema):
+    def processObject(self, target, currentPath, schema):
         for key, info in schema.iteritems():
             v = 100
             threshold = 100
@@ -254,7 +277,8 @@ method of the mongoDB python driver!
                 threshold = info['pctRandomNull']
 
             if v >= threshold:
-                oo = self.makeThing(info)
+                ncp = currentPath + '.' + key
+                oo = self.makeThing(ncp, info)
                 target[key] = oo
 
 
@@ -263,5 +287,5 @@ method of the mongoDB python driver!
         # assuming the top level construct is an object....
 	m = {}
 	ss = schema["properties"]
-	self.processObject(m, ss)
+	self.processObject(m, "", ss)
 	return m

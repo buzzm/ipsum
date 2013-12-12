@@ -1,0 +1,16 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-03\/schema",
+
+  "type": "object",
+  "properties": {
+
+    "vector": {
+	"type":"array",
+	"items": {
+ 		 "type":"integer",
+		 "minItems": 3,
+		 "maxItems": 4
+		 }
+    }
+  }
+}

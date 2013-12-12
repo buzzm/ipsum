@@ -45,6 +45,5 @@ util does.""")
     except ValueError as e:
         print "error generating data from file \"%s\": %s" % (fname, e)
 
-
 #  Std way to fire it up....
 main(sys.argv)

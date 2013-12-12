@@ -1,0 +1,30 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-03\/schema",
+  "type": "object",
+
+  "properties": {
+    "server": {
+      "type": "string",
+      "ipsum": "fname"
+      },
+
+    "cpu": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+      },
+
+    "foo": {
+      "type": "integer",
+      "ipsum": { "inc": { "start": 200, "val": -5 }}
+      },
+
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "ipsum": { "inc": { "start": "20131101", "hrs": 1 }}
+      }
+
+
+    }
+}

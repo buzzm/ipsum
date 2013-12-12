@@ -1,0 +1,91 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-03\/schema",
+
+  "type": "object",
+  "properties": {
+
+    "recentReviews": {
+      "required": false,
+      "type": "array",
+      "items": {
+
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "reviewerID": {
+            "type": "string",
+	    "format": "email"
+          },
+          "reviewerPhone": {
+            "type": "string",
+	    "format": "phone"
+          },
+          "reviewDate": {
+            "type": "string",
+	    "format": "date-time"
+          }
+        }
+      }
+    },
+
+    "productID": {
+      "required": false,
+      "type": "string",
+      "ipsum": "id"
+    },
+
+
+    "productDetails": {
+      "required": false,
+      "type": "object",
+
+      "properties": {
+        "description": {
+          "required": false,
+          "type": "string"
+        },
+
+        "productType": {
+          "required": false,
+          "type": "string",
+	  "enum": [ "A", "B", "C", "D", "E" ]
+	}
+      }
+
+    },
+
+    "currentPrice": {
+      "required": false,
+      "type": "object",
+      "properties": {
+        "approx": {
+          "type": "number"
+	},
+        "scale": {
+          "required": false,
+          "type": "integer",
+	  "enum": [ 100 ]
+        },
+        "amt": {
+          "required": false,
+          "type": "integer",
+	  "enum": [ 100, 200, 300, 250, 1000 ]
+        }
+      }
+    },
+
+    "vector": {
+	"type":"array",
+	"required":false,
+	"items": {
+ 		 "type":"integer",
+    	         "required":false,
+		 "minimum": 0,
+		 "minItems": 2,
+		 "maxItems": 6
+		 }
+    }
+  }
+}

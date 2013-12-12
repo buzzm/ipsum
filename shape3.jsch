@@ -1,0 +1,52 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-03\/schema",
+
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "ipsum": "fname"
+      },
+
+    "msgnum": {
+      "type": "integer",
+      "ipsum": { "inc": { "start": 0, "val": 1 }}
+      },
+
+    "pref": {
+      "type": "string",
+      "enum": [ "red", "black" ],
+      "pctRandomNull": 25
+      },
+
+
+    "userDef": {
+      "type": "poly",
+      "items": [
+         { 
+	   "type": "object",
+	   "properties": {
+	     "weight": {
+	       "type": "integer",
+	       "minimum": 2000,
+	       "maximum": 4000
+	      },
+	     "maker": {
+	       "type": "string",
+	       "enum": [ "ford", "GM", "honda" ]
+	      }
+	    }
+	 }
+	 ,
+         {
+	   "type": "object",
+	   "properties": {
+	     "tasty": {
+	       "type": "integer"
+	     }
+	   }
+	 }
+      ]
+    }
+  }
+}
