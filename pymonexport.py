@@ -58,7 +58,8 @@ def emit(spcs, str):
     if arrayMode == True:
         print str
     else:
-        print spcs, str,
+#        print spcs, str,
+        print str,
 
 
 def emitItem(lvl, ith, v):
@@ -67,32 +68,43 @@ def emitItem(lvl, ith, v):
     spcs = ""
     spcs2 = " " * ith
 
-    if isinstance(v, unicode):
-        emit(spcs, "\"%s\"" % (v))
-        
+    if v == None:
+        emit(spcs, "null")
+
+    elif isinstance(v, unicode):
+        q = v.encode('ascii', 'replace')
+        emit(spcs, "\"%s\"" % q)
+
+    elif isinstance(v, str):
+        emit(spcs, "\"%s\"" % v)
+
+        # test for isinstance bool MUST preceded test for int
+        # because it will satisfy that condition too!
+    elif isinstance(v, bool):
+        # toString of bool works just fine...
+        emit(spcs, "%s" % v)
+
     elif isinstance(v, int):
-        emit(spcs,  "{\"$int\":%s}" % (v) )
+        emit(spcs,  "{\"$int\":%s}" % v )
             
     elif isinstance(v, float):
-        emit(spcs,  "{\"$float\":%s}" % (v) )
+        emit(spcs,  "{\"$float\":%s}" % v )
 
     elif isinstance(v, long):
-        emit(spcs,  "{\"$long\":%s}" % (v) )
+        emit(spcs,  "{\"$long\":%s}" % v )
 
     elif isinstance(v, datetime.datetime):
         q = v.strftime('%s')
-        emit(spcs,  "{\"$date\":%s}" % (q) )
-
-
+        emit(spcs,  "{\"$date\":%s}" % q )
 
     elif isinstance(v, ObjectId):
         # toString of ObjectId mercifully does the right thing....
-        emit(spcs,  "{\"$oid\":\"%s\"}" % (v) )
+        emit(spcs,  "{\"$oid\":\"%s\"}" % v )
 
 
     elif isinstance(v, Binary):
         q = base64.b64encode(v);
-        emit(spcs,  "{\"$binary\":\"%s\"}" % (q) )
+        emit(spcs,  "{\"$binary\":\"%s\"}" % q )
 
 
     elif isinstance(v, list):
@@ -109,6 +121,7 @@ def emitItem(lvl, ith, v):
 
     elif isinstance(v, dict):
         emitDoc(lvl + 1, v)
+
 
     else:
         #  UNKNOWN type?

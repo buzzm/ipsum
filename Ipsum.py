@@ -45,7 +45,8 @@ the value starts at zero and increments with each call to Ipsum.createItem()
 
     def __init__(self, params):
         """params is dict with the following structure:
-mode: optional: one of "pure","mongo","full","raw".   pure generates a 
+mode: optional: one of pure,mongo,full,raw
+pure generates a 
 structure of types that is pure JSON compliant.  String, int, number, and 
 objects/array only, so dates and things are stringified.   mongo generates
 mongoDB JSON type-marker convention entries e.g. {"$date": epoch}.  full
@@ -56,11 +57,18 @@ types in the structure, e.g. dates remain in the returned structure as
 datetime objects, not epoch ints or mongo-ish things.  This mode CAN be
 used, however, to supply a returned structure directly to the insert()
 method of the mongoDB python driver!
+
+defaultStringIpsum: optional: one of sentence,word,fname,id
+The default ipsum for strings is word because most string fields are 
+single short-ish things.  If that's not your case, you can switch it.
+Of course, you can always individually set a field ipsum or, with some
+knowledge of the field, perhaps create an enum set.
       """
         self.lowDateEpoch = 0
         self.highDateEpoch = int(datetime.datetime.now().strftime('%s'))
         self.counters = {}
         self.mode = self.MONGO_JSON
+        self.dsi = "word"
 
         if 'mode' in params:
             v = params['mode']
@@ -73,6 +81,8 @@ method of the mongoDB python driver!
             elif v == 'raw':
                 self.mode = self.RAW
 
+        if 'defaultStringIpsum' in params:
+            self.dsi = params['defaultStringIpsum']
 
 
     def randomFrom(self, arr):
@@ -90,7 +100,7 @@ method of the mongoDB python driver!
 
 
     def makeIpsumString(self, ipsum):
-        mode = "sentence"
+        mode = self.dsi  # default
         s = None
 
         if ipsum != None:
@@ -135,7 +145,10 @@ method of the mongoDB python driver!
     def makeThing(self, path, info):
         type = info["type"]
 
-        if type == "string":
+        if type == "null":
+            o = "null"
+
+        elif type == "string":
             fmt = None
             v = None
 
@@ -190,7 +203,7 @@ method of the mongoDB python driver!
                     # format takes precedence over ipsum field:
                     o = self.makeFormattedString(fmt)
                 else:
-                    t = info['ipsum'] if 'ipsum' in info else "sentence"
+                    t = info['ipsum'] if 'ipsum' in info else None
                     o = self.makeIpsumString(t)
 
             else:
@@ -222,8 +235,7 @@ method of the mongoDB python driver!
             v = None
 
             if "enum" in info:
-                l = info['enum']
-                v = l[self.randomInt(0, len(l) - 1)]
+                v = self.randomFrom(info['enum']) # v is no longer None
 
             elif "ipsum" in info:
                 q = info['ipsum']
@@ -251,8 +263,7 @@ method of the mongoDB python driver!
             v = None
 
             if "enum" in info:
-                l = info['enum']
-                v = l[self.randomInt(0, len(l) - 1)]
+                v = self.randomFrom(info['enum']) # v is no longer None
                 
             if v == None:
                 mmin = info['minimum'] if 'minimum' in info else -100
@@ -264,6 +275,21 @@ method of the mongoDB python driver!
                 o = { "$float": v }
             else:
                 o = v
+
+
+        elif type == "boolean":
+            v = None
+
+            if "enum" in info:
+                q = str(self.randomFrom(info['enum'])) # Force to str....
+                v = q.lower() in ("yes", "true", "t", "1")
+                # v is no longer None but a bool
+
+            if v == None:
+                v = True if self.randomDouble(0,1) > .5 else False
+
+            o = v
+
 
 	return o
 

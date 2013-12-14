@@ -54,42 +54,6 @@ def main(args):
                 coll.insert(m)
 
 
-def emitItem(lvl, ith, v):
-    spcs = ""
-    spcs2 = " " * ith
-
-
-    if isinstance(v, ObjectId):
-        # toString of ObjectId mercifully does the right thing....
-        print "%s{\"$oid\":\"%s\"}" % (spcs,v)
-
-    elif isinstance(v, Binary):
-        q = base64.b64encode(v);
-        print "%s{\"$binary\":\"%s\"}" % (spcs,q)
-
-    elif isinstance(v, list):
-        print "["
-        i = 0
-        for item in v:
-            if i > 0:
-                print "%s," % (spcs2),
-
-            emitItem(lvl + 1, i, item)
-            i = i + 1
-        print "%s]" % (spcs2)
-
-    elif isinstance(v, dict):
-        emitDoc(lvl + 1, v)
-
-    else:
-#    elif isinstance(v, bson.objectid.ObjectId):
-#        print "%s{\"$oid\":\"%s\"}" % (spcs,v)
-
-        t = type(v)
-        print "%s\"%s::%s\"" % (spcs,t,v)
-
-
-
 def processThing(thing):
     newval = None
 
