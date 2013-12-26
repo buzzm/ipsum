@@ -60,6 +60,7 @@ def emit(spcs, str):
     else:
 #        print spcs, str,
         print str,
+#        print "%s" % str,
 
 
 def emitItem(lvl, ith, v):
@@ -71,6 +72,10 @@ def emitItem(lvl, ith, v):
     if v == None:
         emit(spcs, "null")
 
+    elif isinstance(v, Binary):
+        q = base64.b64encode(v);
+        emit(spcs,  "{\"$binary\":\"%s\"}" % q )
+
     elif isinstance(v, unicode):
         q = v.encode('ascii', 'replace')
         emit(spcs, "\"%s\"" % q)
@@ -78,7 +83,7 @@ def emitItem(lvl, ith, v):
     elif isinstance(v, str):
         emit(spcs, "\"%s\"" % v)
 
-        # test for isinstance bool MUST preceded test for int
+        # test for isinstance bool MUST precede test for int
         # because it will satisfy that condition too!
     elif isinstance(v, bool):
         # toString of bool works just fine...
@@ -100,11 +105,6 @@ def emitItem(lvl, ith, v):
     elif isinstance(v, ObjectId):
         # toString of ObjectId mercifully does the right thing....
         emit(spcs,  "{\"$oid\":\"%s\"}" % v )
-
-
-    elif isinstance(v, Binary):
-        q = base64.b64encode(v);
-        emit(spcs,  "{\"$binary\":\"%s\"}" % q )
 
 
     elif isinstance(v, list):
@@ -145,9 +145,9 @@ def emitDoc(lvl, m):
 
         item = m[k]
         if i > 0:
-            emit(spcs,  "  ,\"%s\":" % (k) )
+            emit(spcs,  ",\"%s\":" % (k) )
         else:
-            emit(spcs,  "  \"%s\":" % (k) )
+            emit(spcs,  "\"%s\":" % (k) )
 
         emitItem(lvl + 1, i, item)
         i = i + 1
