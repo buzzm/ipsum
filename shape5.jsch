@@ -1,0 +1,24 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-03\/schema",
+  "type": "object",
+
+  "properties": {
+
+    "fkey": {
+      "type": "string",
+      "ipsum": "bson:ObjectId"
+      },
+
+    "fkey2": {
+      "type": "string",
+      "ipsum": "bson:7"
+      },
+
+    "fkey3": {
+      "type": "string",
+      "ipsum": "bson:NotAppearingInThisFilm"
+      }
+
+
+    }
+}

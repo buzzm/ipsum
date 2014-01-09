@@ -1,6 +1,9 @@
 import random
+import os
 import uuid
 import datetime
+import time
+import struct
 from dateutil import parser
 
 class Ipsum:
@@ -9,23 +12,6 @@ emerging v4 json-schema.org spec, generate one randomly or intelligently
 populated data structure.  In other words, use the metadata to create a piece
 of data.  Some internal state is maintained across calls to createItem() to
 speed things and provide additional functionality.
-
-I have made two extensions:
-
-type:poly
-items: [ list of types ]
-This supports polymorphic construction of JSON.  One of types in the array
-will be chosen at random.
-
-integer ipsum action
-    "msgnum": {
-      "type": "integer",
-      "ipsum": { "inc": "A" }
-      },
-
-Instead of getting a random value, a counter named A will be used, where
-the value starts at zero and increments with each call to Ipsum.createItem()
-(i.e. it is stateful)
 """
 
     bleck = ["kilometre","languageThe","largest","linguistically","logging","mainland","making","metropolitan","mile)","million","more","most","municipality","named","nearby","not","of","on","one","or","original","people","per","populated","populous","railhead","railway","reach","recorded","renamed","residents","sawmill","seaport","settlement","site","speak","square","tavern","than","that","the","their","third","those","to","townsite","transcontinental","was","with","would"]
@@ -70,6 +56,10 @@ knowledge of the field, perhaps create an enum set.
         self.mode = self.MONGO_JSON
         self.dsi = "word"
 
+        self.pid = os.getpid()
+        self.oidinc = random.randint(0, 0xFFFFFF)
+
+
         if 'mode' in params:
             v = params['mode']
             if v == 'mongo':
@@ -83,6 +73,30 @@ knowledge of the field, perhaps create an enum set.
 
         if 'defaultStringIpsum' in params:
             self.dsi = params['defaultStringIpsum']
+
+
+
+    def generateMongoOID(self):
+        """Shameless lifted from bson python source to avoid dependency hell
+        """
+        oid = ""
+
+        # 4 bytes current time
+        oid += struct.pack(">i", int(time.time()))
+
+        # 3 bytes machine
+        #oid += ObjectId._machine_bytes
+        oid += "ABC"
+
+        # 2 bytes pid
+        oid += struct.pack(">H", self.pid % 0xFFFF)
+
+        # 3 bytes inc
+        oid += struct.pack(">i", self.oidinc)[1:4]
+        self.oidinc = (self.oidinc + 1) % 0xFFFFFF
+
+        return oid.encode("hex")
+
 
 
     def randomFrom(self, arr):
@@ -99,7 +113,7 @@ knowledge of the field, perhaps create an enum set.
 
 
 
-    def makeIpsumString(self, ipsum):
+    def makeIpsum(self, ipsum):
         mode = self.dsi  # default
         s = None
 
@@ -118,6 +132,13 @@ knowledge of the field, perhaps create an enum set.
 
         elif mode == "id":
 	    s = str(uuid.uuid4())
+
+        elif mode == "bson:ObjectId" or mode == "bson:7":
+            # oooo   not a string, but a dict!
+            s = { "$oid": self.generateMongoOID() }
+
+        else:
+            s = "unknown_ipsum"
 
 	return s
 
@@ -204,7 +225,7 @@ knowledge of the field, perhaps create an enum set.
                     o = self.makeFormattedString(fmt)
                 else:
                     t = info['ipsum'] if 'ipsum' in info else None
-                    o = self.makeIpsumString(t)
+                    o = self.makeIpsum(t)
 
             else:
                 o = v

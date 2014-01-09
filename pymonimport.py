@@ -27,7 +27,7 @@ def main(args):
 
     parser.add_argument('--drop', 
                         action="store_true",
-                        help="drop the collection first beofre importing into it")
+                        help="drop the collection first before importing into it")
 
     rargs = parser.parse_args()
 
