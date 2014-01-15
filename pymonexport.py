@@ -74,7 +74,7 @@ def emitItem(lvl, ith, v):
 
     elif isinstance(v, Binary):
         q = base64.b64encode(v);
-        emit(spcs,  "{\"$binary\":\"%s\"}" % q )
+        emit(spcs,  "{\"$binary\":\"%s\", \"$type\":\"00\"}" % q )
 
     elif isinstance(v, unicode):
         q = v.encode('ascii', 'replace')

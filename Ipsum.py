@@ -246,13 +246,15 @@ knowledge of the field, perhaps create an enum set.
             # List comprehensions front and center....
             o = [ self.makeThing(path + "." + str(i), ss) for i in xrange( self.randomInt(mmin, mmax)) ]
             
-        elif type == "poly":
+        elif type == "oneOf":
             ll = info["items"]  # A list, not a dict!
             x = self.randomFrom(ll) # pick one and go!
             o = self.makeThing(path, x)
             
 
-        elif type == "integer":
+
+
+        elif type == "number" or type == "integer":
             v = None
 
             if "enum" in info:
@@ -267,24 +269,6 @@ knowledge of the field, perhaps create an enum set.
                     else:
                         self.counters[path] += q2['val']
                     v = self.counters[path]
-
-            if v == None:
-                mmin = info['minimum'] if 'minimum' in info else -100
-                mmax = info['maximum'] if 'maximum' in info else 100
-                v = self.randomInt(mmin,mmax)
-
-            # At this point, we have SOME kind of v!
-            if self.mode == self.FULL_EXT_JSON:
-                o = { "$int": v }
-            else:
-                o = v
-
-
-        elif type == "number":
-            v = None
-
-            if "enum" in info:
-                v = self.randomFrom(info['enum']) # v is no longer None
                 
             if v == None:
                 mmin = info['minimum'] if 'minimum' in info else -100
@@ -293,7 +277,12 @@ knowledge of the field, perhaps create an enum set.
 
             # At this point, we have SOME kind of v!
             if self.mode == self.FULL_EXT_JSON:
-                o = { "$float": v }
+                if type == "number":
+                    o = { "$float": v }
+
+                if type == "integer":
+                    o = { "$int": v }
+
             else:
                 o = v
 

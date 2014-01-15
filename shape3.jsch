@@ -21,7 +21,7 @@
 
 
     "userDef": {
-      "type": "poly",
+      "type": "oneOf",
       "items": [
          { 
 	   "type": "object",

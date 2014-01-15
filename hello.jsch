@@ -1,0 +1,11 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-04\/schema",
+
+  "type": "object",
+  "properties": {
+    "productName": { "type": "string" },
+    "productDesc": { "type": "string", "ipsum": "sentence" },
+    "productDate": { "type": "string", "format": "date-time" },
+    "productID":   { "type": "string", "ipsum": "id" }
+  }
+}

@@ -59,7 +59,25 @@ def processThing(thing):
 
     if isinstance(thing, dict):
         cks = thing.keys()
-        if len(cks) == 1:
+
+        #  Sigh.... special case for $binary...
+        if len(cks) == 2:
+            ck1 = cks[0]
+            ck2 = cks[1]
+
+            if ck1 == "$binary" and ck2 == "$type":
+                v = thing[ck1]
+                q2 = base64.b64decode(v);
+                q = Binary(q2)
+                newval = q    
+
+            if ck2 == "$binary" and ck1 == "$type":
+                v = thing[ck2]
+                q2 = base64.b64decode(v);
+                q = Binary(q2)
+                newval = q    
+
+        elif len(cks) == 1:
 
             ck = cks[0]
             v = thing[ck]

@@ -20,8 +20,12 @@ as ISO8601 strings and numbers are just numbers.   mongo is mongoDB-compatible
 where dates are emitted as a special map {"$date", millis}.  mongoimport is
 sensitive to maps with $ keys and will process the content as the indicated type.
 full is a superset of mongoDB types.  Integers are emitted as {"$int", value},
-floats as {"$float", value}.  mongoimport does not permit this -- but my
-util does.""")
+floats as {"$float", value}.  mongoimport does not permit this -- but 
+pymonimport does.""")
+    parser.add_argument('--defaultStringIpsum', choices=['word','sentence','fname'],
+                        default="word", 
+                        help="""\
+default style of string to emit when presented with type:string.""")
 
     rargs = parser.parse_args()
 
@@ -33,7 +37,8 @@ util does.""")
         schema = json.load(fp)
 
         params = {
-            "mode": rargs.mode 
+            "mode": rargs.mode,
+            "defaultStringIpsum": rargs.defaultStringIpsum
             }
 
         q = Ipsum.Ipsum(params)
