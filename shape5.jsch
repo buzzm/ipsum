@@ -17,8 +17,11 @@
     "fkey3": {
       "type": "string",
       "ipsum": "bson:NotAppearingInThisFilm"
-      }
+      },
 
+    "age": {
+      "type": "integer"
+      }
 
     }
 }

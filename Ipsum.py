@@ -14,7 +14,7 @@ of data.  Some internal state is maintained across calls to createItem() to
 speed things and provide additional functionality.
 """
 
-    bleck = ["kilometre","languageThe","largest","linguistically","logging","mainland","making","metropolitan","mile)","million","more","most","municipality","named","nearby","not","of","on","one","or","original","people","per","populated","populous","railhead","railway","reach","recorded","renamed","residents","sawmill","seaport","settlement","site","speak","square","tavern","than","that","the","their","third","those","to","townsite","transcontinental","was","with","would"]
+    bleck = ["A","Americas","As","Assigned","Bergeron","Business-to-business","Chemically-different","Classification","Climate","Climates","Corporation","Domain","East","Engineering","Far","Force","Foundation","France","Indies","Internet","It","June","Kingdom","Most","Name","Names","National","Newspaper","Numbers","Numerous","Online","Only","Other","Paleoclimatology","Protocol","Science","Simple","Since","Some","Spatial","States","Sugar","Sugarcane","Sugars","Synoptic","System","Task","The","There","They","This","Thornthwaite","Though","US","United","Web","West","While","Wide","Wladimir","World","a","about","academia","academic","accelerated","access","according","across","activity","adapting","address","affect","affected","affiliated","air","along","also","altitude","an","ancient","and","animal","any","anyone","approximately","are","array","artificial","artisans","as","aspect","associate","atmosphere","atmospheric","available","average","back","backbone","backbones","bad","be","became","because","beds","been","beet","before","being","between","billion","biosphere[1]","biotic","birth","blogging","bodies","body","book","boomed","both","broad","build","business","but","by","called","calories","came","can","carbohydrates","carbon","cardiovascular","carries","cause","centralized","century","chains","change","changed","changes","chemically-related","clarify","class","classification","classified","climate","climates","colonies","commercial","commercialization","commissioned","common","commonly","communication","communications","components:","composed","composition","computer","concentrations","conditions","consensus","considered","consists","constituent","consume","consumes","consumption","contributing","controls","cooler","coral","core","cores","count","countries)","course","crop","cryosphere","cultivated","currents","customarily","date","day","decay","define","definitions","degeneration","dementia","derived","described","describes","developed","development","dextrose)","diabetes","diet","different","difficulty","direct","directed","disaccharide","disaccharides","discussed","disease","diversity","do","documents","each","early","effects","efficient","either","electronic","email","enabled","entire","equivalent","especially","ethnic","evapotranspiration","every","evidence","exact","expansion","expertise","extensive","extracting","extraction","fault-tolerant","feeds","film","financial","finding","first","five","focus","food","foods","for","formation","forms","forums","found","free","from","fructose","fully","funding","future","galactose","generalized","generated","giant","given","giving","global","glucose","glucose)","governance","government","granulated","grass","great","had","has","have","health","high","history","honey","human","humidity","hydrogen","hydrolyses","hydrosphere","hypertext","ice","implementation","implicated","important","in","include","including","incorporates","incorporation","indentured","industrialised","industries","inferred","influenced","information","infrastructure","instant","inter-linked","interactions","interconnected","international","into","is","it","its","kg","kilograms","known","labour","lactose","lake","land","largely","latitude","latter","lay","led","life","linked","local","location","long","loosely","lower-calorie","macular","mainly","maintainer","major","maltose","many","masses","mathematical","may","measure","media","merger","messaging","meteorological","methods","mid-1980s","migration","million","millions","models","modern","monosaccharides","more","most","music","name","nations","nearby","network","networking","networks","new","no","non-biotic","non-profit","not","obesity","observations","occur","occurrence","of","on","only","optical","or","organization","origin","originally","origins","other","out","outlets","over","overreaching","own","oxygen","paleoclimates","part","participants","participation","particle","past","pattern","peer-to-peer","people","peoples","per","periods","perpetuation","person","place","plantations","plants","policies","political","popularization","populations","position","potential","precipitation","precursor","present","pressure","previously","principal","print","private","produced","production","protocol","protocols","proxy","public","publishing","questioned","range","ranges","reach","reasonable","recent","redefined","refined","region","rely","research","reshaped","resources","resulted","results","retail","rings","robust","root","scheme","scope","sediments","serve","services","sets","several","shopping","short","short-term","since","small","social","sometime","source","sources","space","spaces","species","standard","standardization","structure","studies","study","studying","substances","substitutes","such","sucrose","sufficient","sugar","sugarcane","sugars","suite","supply","support","surface","suspected","sweet","sweet-flavored","sweeten","sweeteners","system","system[2]","systems","table","taste","technical","technological","technologies","technology","telephone","television","temperature","terrain","than","that","the","their","these","they","third","this","through","time","times","timescales","tissues","to","together","tonnes","took","tooth","trade","traders","traditional","transition","tree","tropical","try","twentieth","two","types","typical","underpinning","undertaken","use","used","users","using","variables","variation","variety","various","varying","via","virtually","voice","warming","wars","was","water","ways","weather","web","website","well","were","what","when","whether","which","who","widely","wind","wireless","with","work","world","worldwide","year"]
 
     fnames = [ "buzz", "richard", "bob", "edouard", "sam", "kay", "andre", "zach", "matt", "daniel", "allen", "jake", "carol", "francesca", "paul", "ron", "max", "steve", "david", "eliot", "todd", "bruce", "lenny", "victor", "alice", "jane", "mary", "jennifer", "chye", "ying", "robin", "lydia", "audrey", "amy", "kevin", "lauren", "stephanie", "kirsten", "julia" ]
 
@@ -44,7 +44,7 @@ datetime objects, not epoch ints or mongo-ish things.  This mode CAN be
 used, however, to supply a returned structure directly to the insert()
 method of the mongoDB python driver!
 
-defaultStringIpsum: optional: one of sentence,word,fname,id
+defaultStringIpsum: optional: one of sentence,paragraph,word,fname,id
 The default ipsum for strings is word because most string fields are 
 single short-ish things.  If that's not your case, you can switch it.
 Of course, you can always individually set a field ipsum or, with some
@@ -114,31 +114,40 @@ knowledge of the field, perhaps create an enum set.
 
 
     def makeIpsum(self, ipsum):
-        mode = self.dsi  # default
+        style = self.dsi  # default
         s = None
 
         if ipsum != None:
-            mode = ipsum
+            style = ipsum
 
-	if mode == "sentence":
-	    n = self.randomInt(0, len(self.bleck))
+        if style == "sentence":
+	    n = self.randomInt(10, 20)
             s = ' '.join([self.randomFrom(self.bleck) for num in xrange(n)])
 
-        elif mode == "word":
+	elif style == "paragraph":
+	    n = self.randomInt(10, len(self.bleck))
+            s = ' '.join([self.randomFrom(self.bleck) for num in xrange(n)])
+
+        elif style == "word":
             s = self.randomFrom(self.bleck)
 
-        elif mode == "fname":
+        elif style == "fname":
             s = self.randomFrom(self.fnames)
 
-        elif mode == "id":
+        elif style == "id":
 	    s = str(uuid.uuid4())
 
-        elif mode == "bson:ObjectId" or mode == "bson:7":
-            # oooo   not a string, but a dict!
-            s = { "$oid": self.generateMongoOID() }
+        elif style == "bson:ObjectId" or style == "bson:7":
+            v = self.generateMongoOID()
+
+            if self.mode == self.PURE_JSON:
+                s = v
+            else:
+                # oooo   not a string, but a dict!
+                s = { "$oid": v }
 
         else:
-            s = "unknown_ipsum"
+            s = "unknown_ipsum \"" + style + "\""
 
 	return s
 
@@ -273,7 +282,12 @@ knowledge of the field, perhaps create an enum set.
             if v == None:
                 mmin = info['minimum'] if 'minimum' in info else -100
                 mmax = info['maximum'] if 'maximum' in info else 100
-                v = self.randomDouble(mmin,mmax)
+                if type == "number":
+                    v = self.randomDouble(mmin,mmax)
+
+                if type == "integer":
+                    v = self.randomInt(mmin,mmax)
+
 
             # At this point, we have SOME kind of v!
             if self.mode == self.FULL_EXT_JSON:

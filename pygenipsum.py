@@ -22,7 +22,7 @@ sensitive to maps with $ keys and will process the content as the indicated type
 full is a superset of mongoDB types.  Integers are emitted as {"$int", value},
 floats as {"$float", value}.  mongoimport does not permit this -- but 
 pymonimport does.""")
-    parser.add_argument('--defaultStringIpsum', choices=['word','sentence','fname'],
+    parser.add_argument('--defaultStringIpsum', choices=['word','sentence','paragraph','fname'],
                         default="word", 
                         help="""\
 default style of string to emit when presented with type:string.""")
