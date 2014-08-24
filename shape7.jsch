@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema",
+
+  "comment": "Yow!",
+
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string",
+      "ipsum": "id"
+     },
+  
+     "personalData": {
+          "type":"object",
+          "properties": {
+	    "gender": {
+              "type":"string",
+	      "enum": [ "M", "F"]
+	    },
+	    "zip": {
+              "type":"string",
+	      "enum": [ "07078", "10024", "07041", "89571", "20087", "10001" ]
+	    }
+	  }
+    },
+
+
+    "tagActivity": {
+      "type":"array",
+      "items": {
+        "type":"object",
+	"minItems": 10,
+	"maxItems": 20,
+        "properties": {
+	   "n": {
+	     "type": "string",
+	     "enum": [ "PETS", "SPICE", "POWERTOOLS", "T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12","T13","T14","T15","T16","T17","T18","T19","T20","T21" ]
+	   },
+	   "algo": {
+	     "type": "string",
+	     "enum": [ "A1", "A4", "A2" ]
+	   },
+	   "hist": {
+	     "type": "array",
+	     "items": {
+	       "minItems": 1,
+	       "maxItems": 4,
+	       "type":"object",
+	       "properties": {	     
+	         "ts": {
+		   "type": "string",
+		   "format": "date-time"
+		 },
+		 "url": {
+		   "type": "string",
+		   "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		 }
+               }
+	     }
+           }
+	 }
+       }
+     }
+   }
+}
+
+

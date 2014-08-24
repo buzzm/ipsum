@@ -50,8 +50,7 @@ single short-ish things.  If that's not your case, you can switch it.
 Of course, you can always individually set a field ipsum or, with some
 knowledge of the field, perhaps create an enum set.
       """
-        self.lowDateEpoch = 0
-        self.highDateEpoch = int(datetime.datetime.now().strftime('%s'))
+
         self.counters = {}
         self.mode = self.MONGO_JSON
         self.dsi = "word"
@@ -71,13 +70,23 @@ knowledge of the field, perhaps create an enum set.
             elif v == 'raw':
                 self.mode = self.RAW
 
+        #  Um, yeah, about this....
+        #  So if we are creating numbers for JSON ASCII output like
+        #  {$date: 24223334322} then those numbers have to be in millis
+        #  for mongoimport (and mongomtimport!).   But if we are in raw
+        #  mode, the python driver wants things granular only to seconds!
+        self.millisAdj = 1000 if self.mode != self.RAW else 1
+
+        self.lowDateEpoch = 60 * 60 * 24 * self.millisAdj   # force 1970-01-02 (in millis)
+        self.highDateEpoch = int(datetime.datetime.now().strftime('%s')) * self.millisAdj
+
         if 'defaultStringIpsum' in params:
             self.dsi = params['defaultStringIpsum']
 
 
 
     def generateMongoOID(self):
-        """Shameless lifted from bson python source to avoid dependency hell
+        """Shamelessly lifted from bson python source to avoid dependency hell
         """
         oid = ""
 
@@ -98,6 +107,9 @@ knowledge of the field, perhaps create an enum set.
         return oid.encode("hex")
 
 
+    def str2Epoch(self, str):
+        dt = parser.parse(str);
+        return int(dt.strftime('%s')) * self.millisAdj  
 
     def randomFrom(self, arr):
         return arr[self.randomInt(0, len(arr) - 1)]
@@ -185,22 +197,28 @@ knowledge of the field, perhaps create an enum set.
             if "format" in info:
                 fmt = info['format']
 
+            # date-time is special.  It is good to have optimizations
+            # because running the parser over and over again on the
+            # string rep of a date is very very slow...
             if "enum" in info:
-                v = self.randomFrom(info['enum']) # v is no longer None
+                if fmt == "date-time":
+                    if '_dateEnums' not in info:
+                        info['_dateEnums'] = [ self.str2Epoch(ss) for ss in info['enum'] ]
 
-            # date-time is special.  VERY special...
+                    v = self.randomFrom(info['_dateEnums']) # pick 
+                else:
+                    v = self.randomFrom(info['enum']) # v is no longer None
+
             if fmt == "date-time":
                 if v is not None:   # must have been an enum; parse!
-                    dt = parser.parse(v)
-                    epoch = int(dt.strftime('%s'))
+                    epoch = v    #self.str2Epoch(v)
                 else:
                     if 'ipsum' in info:  # if we have ipsum...
                         q = info['ipsum']
                         if 'inc' in q: # ...AND we have inc then OK!
                             q2 = q['inc']  #i.e. { "start": 0, "val": 1 }
                             if path not in self.counters:
-                                dt = parser.parse(q2['start'])
-                                epoch = int(dt.strftime('%s'))
+                                epoch = self.str2Epoch(q2['start']) # expensive
                                 self.counters[path] = epoch
                             else:
                                 if 'secs' in q2:
@@ -212,13 +230,38 @@ knowledge of the field, perhaps create an enum set.
                                 if 'days' in q2:
                                     v2 = q2['days'] * 60 * 60 * 24
 
+                                v2 *= self.millisAdj;
+
                                 self.counters[path] += v2
 
                             epoch = self.counters[path]
 
                     # was no ipsum or no ipsum.inc...
                     else:
-                        epoch = self.randomLong(self.lowDateEpoch, self.highDateEpoch)
+                        # try for min and max.  To avoid running the expensive
+                        # parse over and over, look for _min and _max (which only
+                        # we can create).  Don't believe it?  Try commenting out 
+                        # the assignments below (lines ending with #tag1) and
+                        # rerun.  It's almost 3x (300%) faster when you parse and
+                        # save the value....
+                        mmin = self.lowDateEpoch
+                        mmax = self.highDateEpoch
+
+                        if '_min' in info:
+                            mmin = info['_min']
+                        else:
+                            if 'minimum' in info:
+                                mmin = self.str2Epoch(info['minimum']) # expensive
+                                info['_min'] = mmin  #tag1
+
+                        if '_max' in info:
+                            mmax = info['_max']
+                        else:
+                            if 'maximum' in info:
+                                mmax = self.str2Epoch(info['maximum']) # expensive
+                                info['_max'] = mmax  #tag1
+
+                        epoch = self.randomLong(mmin, mmax)
 
 
                 if self.mode == self.FULL_EXT_JSON or self.mode == self.MONGO_JSON:
@@ -226,7 +269,7 @@ knowledge of the field, perhaps create an enum set.
                 elif self.mode == self.RAW:
                     o = datetime.datetime.fromtimestamp(epoch)
                 else:
-                    o = datetime.datetime.fromtimestamp(epoch).strftime('%Y-%m-%dT%H:%M:%S')                    
+                    o = datetime.datetime.fromtimestamp(epoch).strftime('%Y-%m-%dT%H:%M:%S')
 
             elif v is None:  # not date-time and not enum
                 if fmt is not None:

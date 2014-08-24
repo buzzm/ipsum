@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema",
+
+  "comment": "Yow!",
+
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string",
+      "ipsum": "id"
+     },
+  
+     "personalData": {
+          "type":"object",
+          "properties": {
+	    "gender": {
+              "type":"string",
+	      "enum": [ "M", "F"]
+	    },
+	    "zip": {
+              "type":"string",
+	      "enum": [ "07078", "10024", "07041", "89571", "20087", "10001" ]
+	    }
+	  }
+    },
+
+
+    "tags": {
+      "type":"object",
+      "properties": {
+
+        "POWERTOOLS": {
+	     "type": "object",
+	     "properties": {
+	       "algo": {
+	         "type": "string",
+		 "enum": [ "A1", "A4", "A2" ]
+	       },
+	       "hist": {
+	         "type": "array",
+		 "items": {
+	         "minItems": 1,
+	         "maxItems": 4,
+	         "type":"object",
+	         "properties": {	     
+	           "ts": {
+		     "type": "string",
+		     "format": "date-time"
+		   },
+		   "url": {
+		     "type": "string",
+		     "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		   }
+		   }
+                 }
+	       }
+	     }
+	  },
+
+
+        "PETS": {
+	     "type": "object",
+	     "properties": {
+	       "algo": {
+	         "type": "string",
+		 "enum": [ "A1", "A4", "A2" ]
+	       },
+	       "hist": {
+	         "type": "array",
+		 "items": {
+	         "minItems": 1,
+	         "maxItems": 8,
+	         "type":"object",
+	         "properties": {	     
+	           "ts": {
+		     "type": "string",
+		     "format": "date-time"
+		   },
+		   "url": {
+		     "type": "string",
+		     "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		   }
+		   }
+                 }
+	       }
+	     }
+	  },
+
+
+        "TAG1": {
+	     "type": "object",
+	     "properties": {
+	       "algo": {
+	         "type": "string",
+		 "enum": [ "A1", "A4", "A2" ]
+	       },
+	       "hist": {
+	         "type": "array",
+		 "items": {
+	         "minItems": 1,
+	         "maxItems": 8,
+	         "type":"object",
+	         "properties": {	     
+	           "ts": {
+		     "type": "string",
+		     "format": "date-time"
+		   },
+		   "url": {
+		     "type": "string",
+		     "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		   }
+		   }
+                 }
+	       }
+	     }
+	  },
+
+        "TAG2": {
+	     "type": "object",
+	     "properties": {
+	       "algo": {
+	         "type": "string",
+		 "enum": [ "A1", "A4", "A2" ]
+	       },
+	       "hist": {
+	         "type": "array",
+		 "items": {
+	         "minItems": 1,
+	         "maxItems": 8,
+	         "type":"object",
+	         "properties": {	     
+	           "ts": {
+		     "type": "string",
+		     "format": "date-time"
+		   },
+		   "url": {
+		     "type": "string",
+		     "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		   }
+		   }
+                 }
+	       }
+	     }
+	  },
+
+        "TAG3": {
+	     "type": "object",
+	     "properties": {
+	       "algo": {
+	         "type": "string",
+		 "enum": [ "A1", "A4", "A2" ]
+	       },
+	       "hist": {
+	         "type": "array",
+		 "items": {
+	         "minItems": 1,
+	         "maxItems": 8,
+	         "type":"object",
+	         "properties": {	     
+	           "ts": {
+		     "type": "string",
+		     "format": "date-time"
+		   },
+		   "url": {
+		     "type": "string",
+		     "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		   }
+		   }
+                 }
+	       }
+	     }
+	  },
+
+
+
+        "TAG4": {
+	     "type": "object",
+	     "properties": {
+	       "algo": {
+	         "type": "string",
+		 "enum": [ "A1", "A4", "A2" ]
+	       },
+	       "hist": {
+	         "type": "array",
+		 "items": {
+	         "minItems": 1,
+	         "maxItems": 8,
+	         "type":"object",
+	         "properties": {	     
+	           "ts": {
+		     "type": "string",
+		     "format": "date-time"
+		   },
+		   "url": {
+		     "type": "string",
+		     "enum": [ "foo/bar/baz?grimble=12&yaddayadd" ]
+		   }
+		   }
+                 }
+	       }
+	     }
+	  }
+
+
+	}
+    }
+  }
+}
+

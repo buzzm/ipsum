@@ -1,0 +1,36 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-03\/schema",
+
+  "type": "object",
+  "properties": {
+     "r": {
+            "type": "string",
+	    "format": "date-time"
+          },
+
+     "c1": {
+            "type": "string",
+	    "format": "date-time",
+	    "minimum": "1980-01-01",
+	    "maximum": "1990-01-01"
+          },
+
+     "e1": {
+            "type": "string",
+	    "format": "date-time",
+	    "enum": ["20000101", "20000102", "20131212"]
+          },
+
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "ipsum": { "inc": { "start": "2015-01-01", "hrs": 1 }}
+      },
+
+    "ts2": {
+      "type": "string",
+      "format": "date-time",
+      "ipsum": { "inc": { "start": "1998-01-01", "days": 7 }}
+      }
+  }
+}
