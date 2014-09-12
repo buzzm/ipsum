@@ -93,7 +93,7 @@ def emitItem(lvl, ith, v):
         emit(spcs,  "{\"$int\":%s}" % v )
             
     elif isinstance(v, float):
-        emit(spcs,  "{\"$float\":%s}" % v )
+        emit(spcs,  "{\"$double\":%s}" % v )
 
     elif isinstance(v, long):
         emit(spcs,  "{\"$long\":%s}" % v )
