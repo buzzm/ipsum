@@ -2,7 +2,7 @@ ipsum
 =====
 
 Python utils to create random JSON data and import into mongoDB.
-The overall structure and feature basis for ipsum is based on the JSON 
+The overall structure and feature basis for ipsum is based on the JSON
 Schema spec at http://json-schema.org and basically runs it "in reverse":
 instead of validating content against the spec, the spec is used to
 generate randomized content.

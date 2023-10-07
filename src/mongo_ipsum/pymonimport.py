@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
+"Hey, PyLint? SHUT UP"
+import argparse
+import base64
+import datetime
+import json
+
+from bson.binary import Binary
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 
-from bson.objectid import ObjectId
-from bson.binary import Binary
-
-import datetime
-import base64
-import sys
-import json
-import argparse
 
 def main() -> None:
     """Hey, PyLint? SHUT UP"""
@@ -37,12 +37,12 @@ def main() -> None:
     db = client[rargs.db]  # client["mydb"]
     coll = db[rargs.collection]
 
-    if rargs.drop == True:
+    if rargs.drop is True:
         coll.drop()  # start clean!
 
     filename = rargs.importFile
 
-    with open(filename, 'r') as f:
+    with open(filename, encoding='utf-8') as f:
         i = 0
         for line in f:
             i = i + 1
@@ -50,11 +50,11 @@ def main() -> None:
             m = json.loads(line)
 
             if "$comment" not in m:
-                processMap(m)
+                process_map(m)
                 coll.insert(m)
 
 
-def processThing(thing):
+def process_thing(thing) -> any:
     newval = None
 
     if isinstance(thing, dict):
@@ -67,13 +67,13 @@ def processThing(thing):
 
             if ck1 == "$binary" and ck2 == "$type":
                 v = thing[ck1]
-                q2 = base64.b64decode(v);
+                q2 = base64.b64decode(v)
                 q = Binary(q2)
                 newval = q
 
             if ck2 == "$binary" and ck1 == "$type":
                 v = thing[ck2]
-                q2 = base64.b64decode(v);
+                q2 = base64.b64decode(v)
                 q = Binary(q2)
                 newval = q
 
@@ -85,7 +85,7 @@ def processThing(thing):
                 newval = int(v)
 
             elif ck == "$long":
-                newval = long(v)
+                newval = int(v)
 
             elif ck == "$float":
                 newval = float(v)
@@ -99,7 +99,7 @@ def processThing(thing):
                 newval = q
 
             elif ck == "$binary":
-                q2 = base64.b64decode(v);
+                q2 = base64.b64decode(v)
                 q = Binary(q2)
                 newval = q
 
@@ -108,24 +108,23 @@ def processThing(thing):
                 newval = q
 
 
-        if newval == None:
-            processMap(thing)
+        if newval is None:
+            process_map(thing)
 
     elif isinstance(thing, list):
         for i in range(0, len(thing)):
             v = thing[i]
-            nv2 = processThing(v)
+            nv2 = process_thing(v)
             if nv2 is not None:
                 thing[i] = nv2
 
     return newval
 
-
-def processMap(m) -> None:
+def process_map(m) -> None:
     for k in m:
         item = m[k]
 
-        newval = processThing(item)
+        newval = process_thing(item)
 
         if newval is not None:
             m[k] = newval

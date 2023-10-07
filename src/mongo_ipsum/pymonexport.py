@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
+"""Hey, PyLint? SHUT UP"""
+import argparse
+import base64
+import datetime
+
+from bson.binary import Binary
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 
-from bson.objectid import ObjectId
-from bson.binary import Binary
+ARRAY_MODE = False
 
-import datetime
-import base64
-import sys
-import argparse
+NO_ID = False
 
-arrayMode = False
-
-noID = False
-
-def main(args):
+def main():
     """Hey, PyLint? SHUT UP"""
-    global noID
+    global NO_ID
 
     parser = argparse.ArgumentParser(description="Sort of like the real mongoexport but emits more type information. The \
 collection is dumped to stdout so redirect as needed"
@@ -43,10 +42,10 @@ collection is dumped to stdout so redirect as needed"
         db = client[rargs.db]  # client["mydb"]
         coll = db[rargs.collection]
 
-        noID = rargs.noID
+        NO_ID = rargs.noID
 
         for c in coll.find():
-            emitDoc(0, c)
+            emit_doc(0, c)
             print("")
 
     except ValueError as e:
@@ -64,17 +63,17 @@ def emit(spcs, strdata):
 #        print "%s" % str,
 
 
-def emitItem(lvl, ith, v):
-    global noID
+def emit_item(lvl, ith, v):
+    global NO_ID
 
     spcs = ""
     spcs2 = " " * ith
 
-    if v == None:
+    if v is None:
         emit(spcs, "null")
 
     elif isinstance(v, Binary):
-        q = base64.b64encode(v);
+        q = base64.b64encode(v)
         emit(spcs,  "{\"$binary\":\"%s\", \"$type\":\"00\"}" % q )
 
     # elif isinstance(v, unicode):
@@ -115,13 +114,13 @@ def emitItem(lvl, ith, v):
             if i > 0:
                 emit( spcs2, "," )
 
-            emitItem(lvl + 1, i, item)
+            emit_item(lvl + 1, i, item)
             i = i + 1
 
         emit( spcs2, "]" )
 
     elif isinstance(v, dict):
-        emitDoc(lvl + 1, v)
+        emit_doc(lvl + 1, v)
 
 
     else:
@@ -131,8 +130,8 @@ def emitItem(lvl, ith, v):
 
 
 
-def emitDoc(lvl, m):
-    if arrayMode == True:
+def emit_doc(lvl, m):
+    if ARRAY_MODE is True:
         spcs = " " * (lvl*2)
     else:
         spcs = ""
@@ -141,7 +140,7 @@ def emitDoc(lvl, m):
 
     i = 0
     for k in m:
-        if k == '_id' and noID == True:
+        if k == '_id' and NO_ID is True:
             continue
 
         item = m[k]
@@ -150,10 +149,10 @@ def emitDoc(lvl, m):
         else:
             emit(spcs,  "\"%s\":" % (k) )
 
-        emitItem(lvl + 1, i, item)
+        emit_item(lvl + 1, i, item)
         i = i + 1
 
     emit(spcs,  "}")
 
 #  Std way to fire it up....
-main(sys.argv)
+main()

@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-import Ipsum
-import json
-import sys
+"""Hey, PyLint? SHUT UP"""
 import argparse
+import json
 
-def main(args):
+from mongo_ipsum import ipsum
+
+
+def main() -> None:
     """Hey, PyLint? SHUT UP"""
-    parser = argparse.ArgumentParser(description="Generate one or more JSON objects containing random data \
-given a input json-schema.org compatible schema specification")
+    parser = argparse.ArgumentParser(description="Generate one or more \
+                                     JSON objects containing random data \
+                                     given a input json-schema.org compatible \
+                                     schema specification")
     parser.add_argument('schemaFile', metavar='file',
                    help='json-schema.org schema file to use')
     parser.add_argument('--count', default=1, type=int,
@@ -31,24 +35,23 @@ default style of string to emit when presented with type:string.""")
 
     fname = rargs.schemaFile
     count = rargs.count
-    fp = open(fname)
+    with open(fname, encoding='utf-8') as fp:
+        try:
+            schema = json.load(fp)
 
-    try:
-        schema = json.load(fp)
+            params = {
+                "mode": rargs.mode,
+                "defaultStringIpsum": rargs.defaultStringIpsum
+                }
 
-        params = {
-            "mode": rargs.mode,
-            "defaultStringIpsum": rargs.defaultStringIpsum
-            }
+            q = ipsum.Ipsum(params)
 
-        q = Ipsum.Ipsum(params)
+            for _ in range(count):
+                z: list = q.create_item(schema)
+                print(json.dumps(z))
 
-        for i in range(count):
-            z: list = q.createItem(schema)
-            print(json.dumps(z))
-
-    except ValueError as e:
-        print("error generating data from file \"%s\": %s" % (fname, e))
+        except ValueError as e:
+            print(f"error generating data from file '{fname}': {e}")
 
 #  Std way to fire it up....
-main(sys.argv)
+main()

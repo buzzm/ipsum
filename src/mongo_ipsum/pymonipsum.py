@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
-import pymongo
+"Hey, PyLint? SHUT UP"
+import argparse
+import json
+
 from pymongo import MongoClient
 
-import Ipsum
-
-import json
-import sys
-import argparse
+from mongo_ipsum import ipsum
 
 
 def main() -> None:
     "Hey, PyLint? SHUT UP"
-    parser = argparse.ArgumentParser(description="Given a input json-schema.org compatible schema specification, create \
-one or more entries in a mongoDB database of random data")
+    parser = argparse.ArgumentParser(description="Given a input \
+                                     json-schema.org compatible schema \
+                                     specification, create one or more \
+                                     entries in a mongoDB database of random data")
     parser.add_argument('schemaFile', metavar='file',
                    help='json-schema.org schema file to use')
     parser.add_argument('-c','--collection',
@@ -33,33 +34,33 @@ one or more entries in a mongoDB database of random data")
     rargs = parser.parse_args()
 
 
-    client = MongoClient(rargs.host, rargs.port)
+    client: any = MongoClient(rargs.host, rargs.port)
 
     db = client[rargs.db]  # client["mydb"]
     coll = db[rargs.collection]
 
-    if rargs.drop == True:
+    if rargs.drop is True:
         coll.drop()  # start clean!
 
     fname = rargs.schemaFile
     count = rargs.count
-    fp = open(fname)
 
-    try:
-        schema = json.load(fp)
+    with open(fname, encoding='utf-8') as fp:
+        try:
+            schema = json.load(fp)
 
-        params = {
-            "mode": "raw"
-            }
+            params = {
+                "mode": "raw"
+                }
 
-        q = Ipsum.Ipsum(params)
+            q = ipsum.Ipsum(params)
 
-        for i in range(count):
-            z = q.createItem(schema)
-            coll.insert(z)
+            for _ in range(count):
+                z = q.create_item(schema)
+                coll.insert(z)
 
-    except ValueError as e:
-        print("error generating data from file \"%s\": %s" % (fname, e))
+        except ValueError as e:
+            print(f"error generating data from file {fname}: {e}")
 
 
 
