@@ -1,4 +1,4 @@
-import pymongo
+# -*- coding: utf-8 -*-
 from pymongo import MongoClient
 
 from bson.objectid import ObjectId
@@ -10,22 +10,22 @@ import sys
 import json
 import argparse
 
-def main(args):
+def main() -> None:
+    """Hey, PyLint? SHUT UP"""
     parser = argparse.ArgumentParser(description=
-"""Sort of like the real mongoimport but accepts more type information."""
-   )
+    "Sort of like the real mongoimport but accepts more type information.")
     parser.add_argument('importFile', metavar='importFile',
                    help='file containing JSON docs, CR delimited')
-    parser.add_argument('-c','--collection', 
+    parser.add_argument('-c','--collection',
                    help='collection to import into')
-    parser.add_argument('-d','--db', 
+    parser.add_argument('-d','--db',
                         help="database to use")
     parser.add_argument('--host', default="localhost",
                         help="hostname to connect to")
     parser.add_argument('--port', type=int, default=27017,
                         help="port to connect to")
 
-    parser.add_argument('--drop', 
+    parser.add_argument('--drop',
                         action="store_true",
                         help="drop the collection first before importing into it")
 
@@ -36,12 +36,12 @@ def main(args):
 
     db = client[rargs.db]  # client["mydb"]
     coll = db[rargs.collection]
-    
+
     if rargs.drop == True:
         coll.drop()  # start clean!
-        
+
     filename = rargs.importFile
-        
+
     with open(filename, 'r') as f:
         i = 0
         for line in f:
@@ -69,13 +69,13 @@ def processThing(thing):
                 v = thing[ck1]
                 q2 = base64.b64decode(v);
                 q = Binary(q2)
-                newval = q    
+                newval = q
 
             if ck2 == "$binary" and ck1 == "$type":
                 v = thing[ck2]
                 q2 = base64.b64decode(v);
                 q = Binary(q2)
-                newval = q    
+                newval = q
 
         elif len(cks) == 1:
 
@@ -83,13 +83,13 @@ def processThing(thing):
             v = thing[ck]
             if ck == "$int":
                 newval = int(v)
-                
+
             elif ck == "$long":
                 newval = long(v)
-                
+
             elif ck == "$float":
                 newval = float(v)
-                
+
             elif ck == "$date":
                 #q = datetime.datetime.utcfromtimestamp(v)
                 #  Huh?!?  Can't create from timestamp with
@@ -97,15 +97,15 @@ def processThing(thing):
                 #q = datetime.datetime.fromtimestamp(v/1000)
                 q = datetime.datetime.fromtimestamp(v)
                 newval = q
-                
+
             elif ck == "$binary":
                 q2 = base64.b64decode(v);
                 q = Binary(q2)
-                newval = q    
+                newval = q
 
             elif ck == "$oid":
                 q = ObjectId(v)
-                newval = q    
+                newval = q
 
 
         if newval == None:
@@ -120,15 +120,15 @@ def processThing(thing):
 
     return newval
 
-                
-def processMap(m):
+
+def processMap(m) -> None:
     for k in m:
         item = m[k]
-        
+
         newval = processThing(item)
 
         if newval is not None:
             m[k] = newval
 
 #  Std way to fire it up....
-main(sys.argv)
+main()

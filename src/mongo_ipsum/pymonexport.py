@@ -1,4 +1,4 @@
-import pymongo
+# -*- coding: utf-8 -*-
 from pymongo import MongoClient
 
 from bson.objectid import ObjectId
@@ -14,24 +14,24 @@ arrayMode = False
 noID = False
 
 def main(args):
+    """Hey, PyLint? SHUT UP"""
     global noID
 
-    parser = argparse.ArgumentParser(description=
-"""Sort of like the real mongoexport but emits more type information.  The
-collection is dumped to stdout so redirect as needed"""
+    parser = argparse.ArgumentParser(description="Sort of like the real mongoexport but emits more type information. The \
+collection is dumped to stdout so redirect as needed"
    )
 #    parser.add_argument('schemaFile', metavar='file',
 #                   help='json-schema.org schema file to use')
-    parser.add_argument('-c','--collection', 
+    parser.add_argument('-c','--collection',
                    help='collection to dump')
-    parser.add_argument('-d','--db', 
+    parser.add_argument('-d','--db',
                         help="database to use")
     parser.add_argument('--host', default="localhost",
                         help="hostname to connect to")
     parser.add_argument('--port', type=int, default=27017,
                         help="port to connect to")
 
-    parser.add_argument('--noID', 
+    parser.add_argument('--noID',
                         action="store_true",
                         help="do not emit _id")
 
@@ -48,18 +48,19 @@ collection is dumped to stdout so redirect as needed"""
         for c in coll.find():
             emitDoc(0, c)
             print("")
-        
+
     except ValueError as e:
-        print "fail of some kind: %s" % e
+        print("fail of some kind: %s" % e)
 
-        
 
-def emit(spcs, str):
-    if arrayMode == True:
-        print str
-    else:
-#        print spcs, str,
-        print str,
+
+def emit(spcs, strdata):
+    print(strdata)
+#     if arrayMode == True:
+#         print(strdata)
+#     else:
+# #        print spcs, str,
+#         print(strdata)
 #        print "%s" % str,
 
 
@@ -76,9 +77,9 @@ def emitItem(lvl, ith, v):
         q = base64.b64encode(v);
         emit(spcs,  "{\"$binary\":\"%s\", \"$type\":\"00\"}" % q )
 
-    elif isinstance(v, unicode):
-        q = v.encode('ascii', 'replace')
-        emit(spcs, "\"%s\"" % q)
+    # elif isinstance(v, unicode):
+    #     q = v.encode('ascii', 'replace')
+    #     emit(spcs, "\"%s\"" % q)
 
     elif isinstance(v, str):
         emit(spcs, "\"%s\"" % v)
@@ -91,12 +92,12 @@ def emitItem(lvl, ith, v):
 
     elif isinstance(v, int):
         emit(spcs,  "{\"$int\":%s}" % v )
-            
+
     elif isinstance(v, float):
         emit(spcs,  "{\"$double\":%s}" % v )
 
-    elif isinstance(v, long):
-        emit(spcs,  "{\"$long\":%s}" % v )
+    # elif isinstance(v, long):
+    #     emit(spcs,  "{\"$long\":%s}" % v )
 
     elif isinstance(v, datetime.datetime):
         q = v.strftime('%s')
@@ -117,7 +118,7 @@ def emitItem(lvl, ith, v):
             emitItem(lvl + 1, i, item)
             i = i + 1
 
-        emit( spcs2, "]" ) 
+        emit( spcs2, "]" )
 
     elif isinstance(v, dict):
         emitDoc(lvl + 1, v)
@@ -153,9 +154,6 @@ def emitDoc(lvl, m):
         i = i + 1
 
     emit(spcs,  "}")
-        
 
-
-#
 #  Std way to fire it up....
 main(sys.argv)

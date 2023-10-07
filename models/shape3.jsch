@@ -23,7 +23,7 @@
     "userDef": {
       "type": "oneOf",
       "items": [
-         { 
+         {
 	   "type": "object",
 	   "properties": {
 	     "weight": {

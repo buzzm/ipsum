@@ -9,7 +9,7 @@
       "type": "string",
       "ipsum": "id"
      },
-  
+
      "personalData": {
           "type":"object",
           "properties": {
@@ -46,7 +46,7 @@
 	       "minItems": 1,
 	       "maxItems": 4,
 	       "type":"object",
-	       "properties": {	     
+	       "properties": {
 	         "ts": {
 		   "type": "string",
 		   "format": "date-time"
@@ -63,5 +63,3 @@
      }
    }
 }
-
-

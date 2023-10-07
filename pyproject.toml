@@ -1,0 +1,99 @@
+[project]
+name = "mongo_ipsum"
+authors = [
+    {name = "buzzm", email = "dont.know@dont.care"},
+    {name = "onemoretime", email = "not_disclosed@now.here"}
+]
+description = "Generate one or more JSON objects containing random data given a input json-schema.org compatible schema specification. Forked from https://github.com/buzzm/ipsum"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+requires-python = ">=3.8.1"
+
+[project.urls]
+Documentation = ""
+Source = "https://github.com/onemoretime/mongo_ipsum_py3"
+Tracker = "https://github.com/onemoretime/mongo_ipsum_py3/issues"
+
+[project.optional-dependencies]
+test = [
+    "bandit[toml]==1.7.5",
+    "pre-commit==3.3.1",
+    "pylint==2.17.4",
+    "pylint_junit",
+    "pytest-cov==4.0.0",
+    "pytest-mock<3.10.1",
+    "pytest-runner",
+    "pytest==7.3.1",
+    "pytest-github-actions-annotate-failures"
+]
+
+[project.scripts]
+mongo_ipsum = "mongo_ipsum:__main__"
+
+[build-system]
+requires = ["setuptools ~= 49.2"]
+
+
+
+[tool.bandit]
+exclude_dirs = ["build","dist","tests","scripts"]
+number = 4
+recursive = true
+targets = "src"
+
+[tool.mypy]
+python_version = "3.9"
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+# warn_unused_ignores = true
+warn_unreachable = true
+show_error_codes = true
+implicit_reexport = true
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py
+
+[testenv]
+commands =
+    pytest -m "tests" {posargs}
+"""
+
+[tool.pylint]
+extension-pkg-whitelist= []
+ignore="CVS"
+ignore-patterns="test.*?py"
+init-hook='import sys; sys.setrecursionlimit(8 * sys.getrecursionlimit())'
+jobs=0
+limit-inference-results=100
+persistent="yes"
+suggestion-mode="yes"
+unsafe-load-any-extension="no"
+
+[tool.pylint.'REPORTS']
+evaluation="10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)"
+output-format="text"
+reports="no"
+score="yes"
+
+[tool.pylint.'SIMILARITIES']
+ignore-comments="yes"
+ignore-docstrings="yes"
+ignore-imports="yes"
+min-similarity-lines=7
