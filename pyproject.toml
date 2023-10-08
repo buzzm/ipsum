@@ -40,7 +40,7 @@ test = [
 ]
 
 [project.scripts]
-mongo_ipsum = "mongo_ipsum:__main__"
+mongo_ipsum = "mongo_ipsum.__main__:main"
 
 [build-system]
 requires = ["setuptools ~= 68.2.2"]
