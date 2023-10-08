@@ -87,7 +87,7 @@ def emit_item(lvl, ith, v):
         # because it will satisfy that condition too!
     elif isinstance(v, bool):
         # toString of bool works just fine...
-        emit(spcs, "%s" % v)
+        emit(spcs, f"{v}")
 
     elif isinstance(v, int):
         emit(spcs,  "{\"$int\":%s}" % v )
