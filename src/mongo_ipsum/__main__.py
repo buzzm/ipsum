@@ -15,8 +15,8 @@ def main() -> None:
                                      given a input json-schema.org compatible \
                                      schema specification")
     parser.add_argument('schemaFile', metavar='file',
-                   help='json-schema.org schema file to use. could be a local file \
-                    or a file hosted on a webserver')
+                   help='json-schema.org schema file to use. Could be a local file \
+                    or a file hosted on a webserver.')
     parser.add_argument('--count', default=1, type=int,
                    help='number of objects to create (default: 1)')
     parser.add_argument('--mode', choices=['pure','mongo','full'],
@@ -34,19 +34,19 @@ pymonimport does.""")
                         help="""\
 default style of string to emit when presented with type:string.""")
     parser.add_argument('-c','--collection', default='test',
-                        help='collection to import into')
+                        help='collection to import into (default: test)')
     parser.add_argument('-d','--db', default='test',
-                        help="database to use")
+                        help="database to use (default: test)")
     parser.add_argument('--host', default="127.0.0.1",
-                        help="hostname to connect to")
+                        help="hostname to connect to (default: 127.0.0.1)")
     parser.add_argument('--port', type=int, default=27017,
-                        help="port to connect to")
-    parser.add_argument('--drop',
+                        help="port to connect to (default: 27017)")
+    parser.add_argument('--drop', default=False,
                         action="store_true",
-                        help="drop the collection first beofre importing into it")
+                        help="drop the collection first before importing into it (default: False)")
     parser.add_argument('--upload',
                         action="store_true", default=False,
-                        help="drop the collection first beofre importing into it")
+                        help="upload to mongoDB server (default: False)")
 
     rargs = parser.parse_args()
 
