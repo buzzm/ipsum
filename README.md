@@ -1,5 +1,7 @@
-ipsum
-=====
+Mongo_ipsum_py3
+================
+
+[![Python package](https://github.com/onemoretime/mongo_ipsum_py3/actions/workflows/lint.yml/badge.svg)](https://github.com/onemoretime/mongo_ipsum_py3/actions/workflows/lint.yml)
 
 Python utils to create random JSON data and import into mongoDB.
 The overall structure and feature basis for ipsum is based on the JSON
