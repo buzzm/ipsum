@@ -190,12 +190,12 @@ knowledge of the field, perhaps create an enum set.
         oo = None
 
         if fmt == "phone":
-            oo = f"{random.randint(200,900):03d}-{random.randint(200,900):03d}-{random.randint(100,9999):04d}"  # pylint: disable=line-too-long
+            oo = f"{random.randint(200,900):03d}-{random.randint(200,900):03d}-{random.randint(100,9999):04d}"  # pylint: disable=line-too-long # noqa: E501
         elif fmt == "uri":
             oo = "http://foo.bar.com/baz"   # TODO: NEED TO MAKE RANDOM
 
         elif fmt == "email":
-            oo = f"{self.random_from(self.datasources['fnames'])}@{self.random_from(self.datasources['emailproviders'])}"  # pylint: disable=line-too-long
+            oo = f"{self.random_from(self.datasources['fnames'])}@{self.random_from(self.datasources['emailproviders'])}"  # pylint: disable=line-too-long # noqa: E501
 
         return oo
 

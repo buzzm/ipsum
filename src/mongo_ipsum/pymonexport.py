@@ -16,9 +16,10 @@ def main():
     """Hey, PyLint? SHUT UP"""
     global NO_ID
 
-    parser = argparse.ArgumentParser(description="Sort of like the real mongoexport but emits more type information. The \
-collection is dumped to stdout so redirect as needed"
-   )
+    parser = argparse.ArgumentParser(description="Sort of like the real mongoexport \
+                                     but emits more type information. The \
+                                     collection is dumped to stdout so redirect as needed"
+                                    )
 #    parser.add_argument('schemaFile', metavar='file',
 #                   help='json-schema.org schema file to use')
     parser.add_argument('-c','--collection',
