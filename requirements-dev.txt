@@ -1,10 +1,20 @@
 -r requirements.txt
-bandit==1.7.5
-build==1.0.3
-coverage==7.3.2
-mypy==1.5.1
-pre-commit==3.4.0
-pylint==3.0.1
-pytest==7.4.2
-pytest-cov==4.1.0
-tox==4.11.3
+# bandit==1.7.5
+# build==1.0.3
+# coverage==7.3.2
+# mypy==1.5.1
+# pre-commit==3.4.0
+# pylint==3.0.1
+# pytest==7.4.2
+# pytest-cov==4.1.0
+# tox==4.11.3
+
+bandit
+build
+coverage
+mypy
+pre-commit
+pylint
+pytest
+pytest-cov
+tox
