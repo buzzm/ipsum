@@ -28,10 +28,10 @@ jobs:
         run: |
           # stop the build if there are Python syntax errors or undefined names
           # ruff --output-format=github --select=E9,F63,F7,F82 --target-version=py39 .
-          ruff --output-format=github --line-length=100 --select=E9,F63,F7,F82 .
+          ruff --select=E9,F63,F7,F82 .
           # default set of ruff rules with GitHub Annotations
           # ruff --output-format=github --target-version=py39 .
-          ruff --output-format=github --line-length=100 .
+          ruff .
       # - name: Test with pytest
       #   run: |
       #     pytest
