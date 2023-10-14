@@ -92,9 +92,10 @@ commands =
 """
 
 [tool.ruff]
-select = ["F", "E", "I", "N", "D", "S", "A", "TD", "PL"]
-ignore = ["E501"]
-exclude = [".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg", ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out", "build", "dist", "node_modules", "venv"]
+# select = ["F", "E", "I", "N", "D", "S", "A", "TD", "PL"]
+select = ["F", "E", "I", "N", "D", "S", "A"]
+ignore = ["E501","PLR0912","D103","D401","PLR0915","D205", "D212"]
+exclude = ["docs/source/conf.py",".bzr", ".direnv", ".eggs", ".git", ".git-rewrite", ".hg", ".mypy_cache", ".nox", ".pants.d", ".pytype", ".ruff_cache", ".svn", ".tox", ".venv", "__pypackages__", "_build", "buck-out", "build", "dist", "node_modules", "venv"]
 per-file-ignores = {}
 line-length = 100
 output-format = "github"

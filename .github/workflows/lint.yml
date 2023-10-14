@@ -23,7 +23,7 @@ jobs:
       - name: Lint with ruff
         run: |
           env
-          export PYVER=$(import sys; python -c 'print(str(sys.version_info.major) + "." + str(sys.version_info.minor))')
+          export PYVER=$(python -c 'import sys; print(str(sys.version_info.major) + "." + str(sys.version_info.minor))')
           # stop the build if there are Python syntax errors or undefined names
           # ruff --output-format=github --select=E9,F63,F7,F82 --target-version=py39 .
           echo $PYVER

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Hey, PyLint? SHUT UP"""
+"""Hey, PyLint? SHUT UP."""
 import argparse
 import base64
 import datetime
@@ -13,7 +13,7 @@ ARRAY_MODE = False
 NO_ID = False
 
 def main():
-    """Hey, PyLint? SHUT UP"""
+    """Hey, PyLint? SHUT UP."""
     global NO_ID
 
     parser = argparse.ArgumentParser(description="Sort of like the real mongoexport \

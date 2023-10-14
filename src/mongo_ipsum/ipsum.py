@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Hey, PyLint? SHUT UP"""
+"""Hey, PyLint? SHUT UP."""
+import binascii
 import datetime
 import json
 import os
@@ -7,18 +8,18 @@ import random
 import struct
 import time
 import uuid
-import binascii
 
 from dateutil import parser
 
 
 class Ipsum:
-    """Given a python dictionary containing a structure that conforms to the
-emerging v4 json-schema.org spec, generate one randomly or intelligently
-populated data structure.  In other words, use the metadata to create a piece
-of data.  Some internal state is maintained across calls to createItem() to
-speed things and provide additional functionality.
-"""
+    """
+    Given a python dictionary containing a structure that conforms to the
+    emerging v4 json-schema.org spec, generate one randomly or intelligently
+    populated data structure.  In other words, use the metadata to create a piece
+    of data.  Some internal state is maintained across calls to createItem() to
+    speed things and provide additional functionality.
+    """
 
     RAW = 0
     PURE_JSON = 1
@@ -30,33 +31,33 @@ speed things and provide additional functionality.
     DEF_MAX_ARR_LEN = 4
 
     def __init__(self, params):
-        """params is dict with the following structure:
-mode: optional: one of pure,mongo,full,raw
-pure generates a
-structure of types that is pure JSON compliant.  String, int, number, and
-objects/array only, so dates and things are stringified.   mongo generates
-mongoDB JSON type-marker convention entries e.g. {"$date": epoch}.  full
-generate JSON type-marker entries for ALL non-string types e.g.
-{"$long": 78374628734633} (mongoimport will NOT digest these extended types
-but pymonimport will).   raw does not perform any JSON-readiness on the
-types in the structure, e.g. dates remain in the returned structure as
-datetime objects, not epoch ints or mongo-ish things.  This mode CAN be
-used, however, to supply a returned structure directly to the insert()
-method of the mongoDB python driver!
+        """
+        Params is dict with the following structure:
+        mode: optional: one of pure,mongo,full,raw
+        pure generates a
+        structure of types that is pure JSON compliant.  String, int, number, and
+        objects/array only, so dates and things are stringified.   mongo generates
+        mongoDB JSON type-marker convention entries e.g. {"$date": epoch}.  full
+        generate JSON type-marker entries for ALL non-string types e.g.
+        {"$long": 78374628734633} (mongoimport will NOT digest these extended types
+        but pymonimport will).   raw does not perform any JSON-readiness on the
+        types in the structure, e.g. dates remain in the returned structure as
+        datetime objects, not epoch ints or mongo-ish things.  This mode CAN be
+        used, however, to supply a returned structure directly to the insert()
+        method of the mongoDB python driver!.
 
-defaultStringIpsum: optional: one of sentence,paragraph,word,fname,id
-The default ipsum for strings is word because most string fields are
-single short-ish things.  If that's not your case, you can switch it.
-Of course, you can always individually set a field ipsum or, with some
-knowledge of the field, perhaps create an enum set.
-      """
-
+        defaultStringIpsum: optional: one of sentence,paragraph,word,fname,id
+        The default ipsum for strings is word because most string fields are
+        single short-ish things.  If that's not your case, you can switch it.
+        Of course, you can always individually set a field ipsum or, with some
+        knowledge of the field, perhaps create an enum set.
+        """
         self.counters = {}
         self.mode = self.MONGO_JSON
         self.dsi = "word"
 
         self.pid = os.getpid()
-        self.oidinc = random.randint(0, 0xFFFFFF)
+        self.oidinc = random.randint(0, 0xFFFFFF) # noqa: S311
 
         self.random_data_sources = "embedded"
         self._datasources = {}
@@ -114,9 +115,7 @@ knowledge of the field, perhaps create an enum set.
         del self._datasources
 
     def generate_mongo_oid(self) -> str:
-        """
-        Shamelessly lifted from bson python source to avoid dependency hell
-        """
+        """Shamelessly lifted from bson python source to avoid dependency hell."""
         oid = b''
 
         # 4 bytes current time
@@ -136,19 +135,20 @@ knowledge of the field, perhaps create an enum set.
         return str(binascii.hexlify(oid))
 
     def str_to_epoch(self, strdatetime):
-        """ convert str to timestamp """
+        """Convert str to timestamp."""
         dt = parser.parse(strdatetime)
         return int(dt.strftime('%s')) * self.millis_adj
 
     def random_from(self, arr):
-        """ returns a random item from an array """
-        return arr[random.randint(0, len(arr) - 1)]
+        """Returns a random item from an array."""
+        return arr[random.randint(0, len(arr) - 1)]  # noqa: S311
 
     def random_double(self, low, high):
-        """ returns a random between range"""
-        return random.random() * (high - low) + low
+        """Returns a random between range."""
+        return random.random() * (high - low) + low  # noqa: S311
 
     def make_ipsum(self, ipsum) -> str:
+        """Ipsum generator."""
         style = self.dsi  # default
         s = None
 
@@ -156,18 +156,18 @@ knowledge of the field, perhaps create an enum set.
             style = ipsum
 
         if style == "sentence":
-            n = random.randint(10, 20)
+            n = random.randint(10, 20)  # noqa: S311
             s = ' '.join([self.random_from(self.datasources['bleck']) for num in range(n)])
 
         elif style == "paragraph":
-            n = random.randint(10, len(self.datasources['bleck']))
+            n = random.randint(10, len(self.datasources['bleck']))  # noqa: S311
             s = ' '.join([self.random_from(self.datasources['bleck']) for num in range(n)])
 
         elif style == "word":
-            s = self.random_from(self.datasources['bleck'])
+            s = self.random_from(self.datasources['bleck'])  # noqa: S311
 
         elif style == "fname":
-            s = self.random_from(self.datasources['fnames'])
+            s = self.random_from(self.datasources['fnames'])  # noqa: S311
 
         elif style == "id":
             s = str(uuid.uuid4())
@@ -187,21 +187,23 @@ knowledge of the field, perhaps create an enum set.
         return s
 
     def make_formatted_string(self, fmt):
+        """Returns a well-known generated string."""
         oo = None
 
         if fmt == "phone":
-            oo = f"{random.randint(200,900):03d}-{random.randint(200,900):03d}-{random.randint(100,9999):04d}"  # pylint: disable=line-too-long # noqa: E501
+            oo = f"{random.randint(200,900):03d}-{random.randint(200,900):03d}-{random.randint(100,9999):04d}"  # pylint: disable=line-too-long # noqa: E501, S311
         elif fmt == "uri":
-            oo = "http://foo.bar.com/baz"   # TODO: NEED TO MAKE RANDOM
+            oo = "http://foo.bar.com/baz"   # TODO(onemoretime): NEED TO MAKE RANDOM
 
         elif fmt == "email":
-            oo = f"{self.random_from(self.datasources['fnames'])}@{self.random_from(self.datasources['emailproviders'])}"  # pylint: disable=line-too-long # noqa: E501
+            oo = f"{self.random_from(self.datasources['fnames'])}@{self.random_from(self.datasources['emailproviders'])}"  # pylint: disable=line-too-long # noqa: E501,S311
 
         return oo
 
 
 
     def make_thing(self, path, info):
+        """Start to generate constructed Ipsum."""
         datatype = info["type"]
 
         if datatype == "null":
@@ -229,7 +231,7 @@ knowledge of the field, perhaps create an enum set.
             if fmt == "date-time":
                 if v is not None:   # must have been an enum; parse!
                     epoch = v    #self.str2Epoch(v)
-                else:
+                else:  # noqa: PLR5501
                     if 'ipsum' in info:  # if we have ipsum...
                         q = info['ipsum']
                         if 'inc' in q: # ...AND we have inc then OK!
@@ -266,19 +268,19 @@ knowledge of the field, perhaps create an enum set.
 
                         if '_min' in info:
                             mmin = info['_min']
-                        else:
+                        else:  # noqa: PLR5501
                             if 'minimum' in info:
                                 mmin = self.str_to_epoch(info['minimum']) # expensive
                                 info['_min'] = mmin  #tag1
 
                         if '_max' in info:
                             mmax = info['_max']
-                        else:
+                        else:  # noqa: PLR5501
                             if 'maximum' in info:
                                 mmax = self.str_to_epoch(info['maximum']) # expensive
                                 info['_max'] = mmax  #tag1
 
-                        epoch = random.randint(mmin, mmax)
+                        epoch = random.randint(mmin, mmax)  # noqa: S311
 
 
                 if self.mode == self.FULL_EXT_JSON or self.mode == self.MONGO_JSON:
@@ -314,7 +316,7 @@ knowledge of the field, perhaps create an enum set.
 
             # List comprehensions front and center....
             o = [ self.make_thing(path + "." + str(i), ss) for \
-                 i in range( random.randint(mmin, mmax)) ]
+                 i in range( random.randint(mmin, mmax)) ]  # noqa: S311
 
         elif datatype == "oneOf":
             ll = info["items"]  # A list, not a dict!
@@ -342,10 +344,10 @@ knowledge of the field, perhaps create an enum set.
                 mmax = info['maximum'] if 'maximum' in info else 100
                 if type == "number":
                     # v = self.randomDouble(mmin,mmax)
-                    v = random.randint(mmin,mmax)
+                    v = random.randint(mmin,mmax)  # noqa: S311
 
                 if type == "integer":
-                    v = random.randint(mmin,mmax)
+                    v = random.randint(mmin,mmax)  # noqa: S311
 
 
             # At this point, we have SOME kind of v!
@@ -367,17 +369,18 @@ knowledge of the field, perhaps create an enum set.
                 v = q.lower() in ("yes", "true", "t", "1")
                 # v is no longer None but a bool
             if v is None:
-                v = True if random.random() > .5 else False
+                v = True if random.random() > .5 else False  # noqa: S311
             o = v
 
         return o
 
     def process_object(self, target, current_path, schema) -> None:
+        """Process Ipsum request."""
         for key, info in schema.items():
             v = 100
             threshold = 100
             if "pctRandomNull" in info:
-                v = random.random() * 100
+                v = random.random() * 100  # noqa: S311
                 threshold = info['pctRandomNull']
 
             if v >= threshold:
@@ -387,8 +390,9 @@ knowledge of the field, perhaps create an enum set.
 
 
     def create_item(self, schema) -> dict:
-        """ This is sort of "kick starts" things by diving into it
-        assuming the top level construct is an object....
+        """
+        Sort of "kick starts" things by diving into it
+        assuming the top level construct is an object.
         """
         m = {}
         ss = schema["properties"]

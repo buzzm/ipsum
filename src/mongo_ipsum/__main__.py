@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-"""Hey, PyLint? SHUT UP"""
+"""Hey, PyLint? SHUT UP."""
 import argparse
-import sys
 import json
+import sys
+
 import requests
 from pymongo import MongoClient
+
 from mongo_ipsum import ipsum
 
 
 def main() -> None:
-    """Hey, PyLint? SHUT UP"""
+    """Hey, PyLint? SHUT UP."""
     parser = argparse.ArgumentParser(description="Generate one or more \
                                      JSON objects containing random data \
                                      given a input json-schema.org compatible \
@@ -65,7 +67,7 @@ default style of string to emit when presented with type:string.""")
     schema = {}
     try:
         if fname.startswith('http'):
-            schema_req = requests.get(headers={'Content-type': 'application/json'},url = fname)
+            schema_req = requests.get(headers={'Content-type': 'application/json'},url = fname,timeout=30)
             if schema_req.status_code in [200,]:
                 schema = schema_req.json()
         else:

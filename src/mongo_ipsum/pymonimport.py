@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"Hey, PyLint? SHUT UP"
+"""Hey, PyLint? SHUT UP."""
 import argparse
 import base64
 import datetime
@@ -11,7 +11,7 @@ from pymongo import MongoClient
 
 
 def main() -> None:
-    """Hey, PyLint? SHUT UP"""
+    """Hey, PyLint? SHUT UP."""
     parser = argparse.ArgumentParser(description=
     "Sort of like the real mongoimport but accepts more type information.")
     parser.add_argument('importFile', metavar='importFile',
@@ -61,7 +61,7 @@ def process_thing(thing) -> any:
         cks = thing.keys()
 
         #  Sigh.... special case for $binary...
-        if len(cks) == 2:
+        if len(cks) == 2:  # noqa: PLR2004
             ck1 = cks[0]
             ck2 = cks[1]
 
