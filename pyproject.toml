@@ -86,6 +86,10 @@ fail_under = 100
 legacy_tox_ini = """
 [tox]
 envlist = py
+[testenv]
+commands =
+    pytest -m "tests" {posargs}
+"""
 
 [tool.ruff]
 select = ["F", "E", "I", "N", "D", "S", "A", "TD", "PL"]
@@ -95,12 +99,6 @@ per-file-ignores = {}
 line-length = 100
 output-format = "github"
 src = ["src"]
-
-
-[testenv]
-commands =
-    pytest -m "tests" {posargs}
-"""
 
 [tool.pylint]
 extension-pkg-whitelist= []
