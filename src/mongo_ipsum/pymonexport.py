@@ -65,6 +65,7 @@ def emit(spcs, strdata):
 
 
 def emit_item(lvl, ith, v):
+
     global NO_ID
 
     spcs = ""
